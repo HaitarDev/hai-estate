@@ -14,7 +14,7 @@ function Navbar() {
           <span className="text-purple-700">Estate</span>
         </Link>
         {/* input */}
-        <form className="bg-purple-100 sm:p-2 p-2 rounded-lg flex justify-between items-center ">
+        <form className="bg-purple-100 sm:p-2 p-2 rounded-lg flex justify-between items-center shadow-inner  ">
           <input
             type="text"
             placeholder="Search..."

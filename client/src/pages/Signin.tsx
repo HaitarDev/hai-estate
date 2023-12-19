@@ -1,16 +1,27 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { URL_HOST } from "../Costant";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading, successUser, setError } from "../redux/slice/userSlice";
+import type { RootState } from "../redux/store";
+
+interface User {
+  email: string | null;
+  password: string | null;
+}
 
 function Signup() {
-  const [formData, setFormData] = useState({});
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState<User>({
+    email: null,
+    password: null,
+  });
+  const { loading, error } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setError("");
+    dispatch(setError(""));
     setFormData({
       ...formData,
       [e.target.id]: e.target.value,
@@ -20,7 +31,7 @@ function Signup() {
   //  submit form
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    setIsLoading(true);
+    dispatch(setLoading(true));
     try {
       const res = await fetch(`${URL_HOST}/api/auth/signin`, {
         method: "POST",
@@ -30,25 +41,22 @@ function Signup() {
           "Content-Type": "application/json",
         },
       });
-      if (!res) setIsLoading(false);
+      if (!res) dispatch(setLoading(false));
 
       const data = await res.json();
       if (data.success === false) {
-        setError(data.message);
-        setIsLoading(false);
+        dispatch(setError(data.message));
       } else {
-        setIsLoading(false);
-        setError("");
+        dispatch(successUser(formData.email));
         navigate("/");
       }
     } catch (err) {
-      setIsLoading(false);
       console.log(error);
     }
   };
 
   return (
-    <div className=" my-24 max-w-lg sm:max-w-xl mx-auto">
+    <div className=" my-24 max-w-lg sm:max-w-xl mx-auto px-4 sm:px-0">
       <h1 className="font-semibold text-3xl sm:text-4xl text-center text-slate-900">
         Sign In
       </h1>
@@ -70,10 +78,10 @@ function Signup() {
         {/* buttons */}
         <div>
           <button
-            disabled={isLoading}
+            disabled={loading}
             className="cursor-pointer bg-violet-600 text-white py-4 rounded-lg text-lg font-medium uppercase w-full hover:opacity-95 hover:transition-colors disabled:opacity-80"
           >
-            {isLoading ? "loading..." : "sign in"}
+            {loading ? "loading..." : "sign in"}
           </button>
         </div>
 
