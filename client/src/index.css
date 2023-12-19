@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.container {
+  @apply max-w-screen-2xl mx-auto;
+}
+
+body {
+  @apply bg-neutral-50;
+}
+
+.input {
+  @apply p-4 rounded-lg focus:outline focus:outline-violet-400 focus:outline-1 shadow-sm;
+}
