@@ -4,6 +4,7 @@ import { URL_HOST } from "../Costant";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, successUser, setError } from "../redux/slice/userSlice";
 import type { RootState } from "../redux/store";
+import Oauth from "../components/Oauth";
 
 interface User {
   email: string | null;
@@ -76,13 +77,14 @@ function Signup() {
           id="password"
         />
         {/* buttons */}
-        <div>
+        <div className="flex flex-col gap-2">
           <button
             disabled={loading}
-            className="cursor-pointer bg-violet-600 text-white py-4 rounded-lg text-lg font-medium uppercase w-full hover:opacity-95 hover:transition-colors disabled:opacity-80"
+            className="cursor-pointer bg-violet-600 text-white py-4 rounded-lg text-lg font-medium uppercase w-full hover:opacity-95 hover:transition-colors disabled:opacity-80 "
           >
             {loading ? "loading..." : "sign in"}
           </button>
+          <Oauth />
         </div>
 
         {/* sign in button */}

@@ -11,5 +11,5 @@ body {
 }
 
 .input {
-  @apply p-4 rounded-lg focus:outline focus:outline-violet-400 focus:outline-1 shadow-sm;
+  @apply p-4 rounded-lg focus:outline focus:outline-violet-400 focus:outline-1 shadow-sm border border-stone-200;
 }

@@ -3,6 +3,13 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const { errorHandler } = require("../utils/error.js");
 
+const signToken = (id) => {
+  const token = jwt.sign({ id: id }, process.env.SECRET_KEY, {
+    expiresIn: "10d",
+  });
+  return token;
+};
+
 exports.signup = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
@@ -31,12 +38,42 @@ exports.signin = async (req, res, next) => {
     if (!checkPassword)
       return next(errorHandler(403, "your password is incorrect"));
 
-    const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, {
-      expiresIn: "10d",
-    });
+    const token = signToken(user._id);
 
-    return res.cookie("jwt", token).status(200).json(user);
+    return res.cookie("jwt", token, { httpOnly: true }).status(200).json(user);
   } catch (err) {
     next(err);
+  }
+};
+
+// google
+exports.google = async (req, res, next) => {
+  const { name, email, avatar } = req.body;
+  try {
+    // if there is already a user ---------
+    const user = await User.findOne({ email });
+    if (user) {
+      const token = signToken(user._id);
+
+      res.cookie("jwt", token, { httpOnly: true }).status(200).json(user);
+    } else {
+      const password =
+        Math.random().toString(32).slice(-8) +
+        Math.random().toString(32).slice(-8);
+
+      const hashPassword = await bcryptjs.hash(password, 12);
+      const newUser = await User.create({
+        username:
+          name.split(" ").join("").toLowerCase() +
+          Math.random().toString(32).slice(-4),
+        password: hashPassword,
+        email,
+        avatar,
+      });
+      const newToken = signToken(newUser._id);
+      res.cookie("jwt", newToken, { httpOnly: true }).status(200).json(newUser);
+    }
+  } catch (error) {
+    next(error);
   }
 };
