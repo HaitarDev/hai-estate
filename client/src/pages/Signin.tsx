@@ -11,14 +11,13 @@ interface User {
   password: string | null;
 }
 
-function Signup() {
+function Signin() {
   const [formData, setFormData] = useState<User>({
     email: null,
     password: null,
   });
   const { loading, error } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,10 +46,11 @@ function Signup() {
       const data = await res.json();
       if (data.success === false) {
         dispatch(setError(data.message));
-      } else {
-        dispatch(successUser(formData.email));
-        navigate("/");
       }
+
+      navigate("/");
+      dispatch(successUser(data));
+      console.log(data);
     } catch (err) {
       console.log(error);
     }
@@ -87,7 +87,7 @@ function Signup() {
           <Oauth />
         </div>
 
-        {/* sign in button */}
+        {/* sign up button */}
         <div className="flex gap-2 font-medium">
           <p>have no account ?</p>
           <p
@@ -104,4 +104,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default Signin;

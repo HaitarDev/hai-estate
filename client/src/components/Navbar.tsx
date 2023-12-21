@@ -1,7 +1,11 @@
 import { FaSearch } from "react-icons/fa";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { RootState } from "../redux/store";
 
 function Navbar() {
+  const { user } = useSelector((state: RootState) => state.user);
+
   return (
     <header className="  py-4 px-4 lg:px-0 bg-purple-50 shadow-md">
       <div className="container flex justify-between items-center">
@@ -23,18 +27,29 @@ function Navbar() {
           <FaSearch className="text-stone-800" />
         </form>
         {/* navbar */}
-        <ul className="flex gap-8 text-lg font-medium text-stone-700">
-          <li>
-            <Link to={"/signin"} className="hover:underline">
-              Sign in
-            </Link>
-          </li>
-          <li className="hidden sm:inline">
-            <Link to={"/signup"} className="hover:underline">
-              Sign up
-            </Link>
-          </li>
-        </ul>
+        {user ? (
+          <Link to={"/profile"}>
+            <img
+              width={40}
+              className="rounded-full"
+              src={user.avatar}
+              alt={`${user.avatar} photo`}
+            />
+          </Link>
+        ) : (
+          <ul className="flex gap-8 text-lg font-medium text-stone-700">
+            <li>
+              <Link to={"/signin"} className="hover:underline">
+                Sign in
+              </Link>
+            </li>
+            <li className="hidden sm:inline">
+              <Link to={"/signup"} className="hover:underline">
+                Sign up
+              </Link>
+            </li>
+          </ul>
+        )}
       </div>
     </header>
   );

@@ -40,7 +40,11 @@ exports.signin = async (req, res, next) => {
 
     const token = signToken(user._id);
 
-    return res.cookie("jwt", token, { httpOnly: true }).status(200).json(user);
+    const { password: newPassword, ...rest } = user._doc;
+
+    // console.log(rest);
+
+    return res.cookie("jwt", token, { httpOnly: true }).status(200).json(rest);
   } catch (err) {
     next(err);
   }
@@ -55,7 +59,9 @@ exports.google = async (req, res, next) => {
     if (user) {
       const token = signToken(user._id);
 
-      res.cookie("jwt", token, { httpOnly: true }).status(200).json(user);
+      const { password, ...rest } = user;
+
+      res.cookie("jwt", token, { httpOnly: true }).status(200).json(rest);
     } else {
       const password =
         Math.random().toString(32).slice(-8) +
@@ -71,7 +77,10 @@ exports.google = async (req, res, next) => {
         avatar,
       });
       const newToken = signToken(newUser._id);
-      res.cookie("jwt", newToken, { httpOnly: true }).status(200).json(newUser);
+
+      const { password: newPassword, ...rest } = user._doc;
+
+      res.cookie("jwt", newToken, { httpOnly: true }).status(200).json(rest);
     }
   } catch (error) {
     next(error);
