@@ -2,6 +2,7 @@ import { FaSearch } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { RootState } from "../redux/store";
+import { URL_HOST } from "../Costant";
 
 function Navbar() {
   const { user } = useSelector((state: RootState) => state.user);
@@ -18,7 +19,7 @@ function Navbar() {
           <span className="text-purple-700">Estate</span>
         </Link>
         {/* input */}
-        <form className="bg-purple-100 sm:p-2 p-2 rounded-lg flex justify-between items-center shadow-inner  ">
+        <form className="bg-purple-100 sm:p-2 p-2 rounded-lg flex justify-between items-center shadow-inner">
           <input
             type="text"
             placeholder="Search..."
@@ -28,11 +29,14 @@ function Navbar() {
         </form>
         {/* navbar */}
         {user ? (
-          <Link to={"/profile"}>
+          <Link
+            to={"/profile"}
+            className="flex items-center gap-3 font-semibold "
+          >
+            <p>{user.username}</p>
             <img
-              width={40}
-              className="rounded-full"
-              src={user.avatar}
+              className="h-12 w-12 rounded-full mx-auto object-cover cursor-pointer"
+              src={`${URL_HOST}/users/${user?.avatar}`}
               alt={`${user.avatar} photo`}
             />
           </Link>

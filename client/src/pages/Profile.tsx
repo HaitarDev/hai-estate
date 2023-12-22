@@ -1,11 +1,46 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { URL_HOST } from "../Costant";
+import { updateImage } from "../redux/slice/userSlice";
 
 function Profile() {
-  const { user } = useSelector((state: RootState) => state.user);
+  const [selectImg, setSelectImg] = useState(undefined);
   const imgRef = useRef(null);
 
+  const { user } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (selectImg) {
+      const uploadImage = async () => {
+        try {
+          const formData = new FormData();
+          formData.append("avatar", selectImg);
+
+          const res = await fetch(`${URL_HOST}/api/user/updateImg`, {
+            method: "PATCH",
+            body: formData,
+            credentials: "include",
+          });
+
+          if (!res.ok) throw new Error("Error fetching image");
+
+          const data = await res.json();
+
+          dispatch(updateImage(data));
+
+          console.log(data);
+
+          setSelectImg(undefined);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      uploadImage();
+    }
+  }, [selectImg, dispatch]);
   return (
     <div className=" my-24 max-w-lg sm:max-w-xl mx-auto">
       <h1 className="font-semibold text-3xl sm:text-4xl text-center text-slate-900">
@@ -13,14 +48,19 @@ function Profile() {
       </h1>
       <form className="flex flex-col gap-4 mt-8">
         <img
-          src={user?.avatar}
+          src={`${URL_HOST}/users/${user?.avatar}`}
           alt={`${user?.avatar} photo`}
-          width={80}
-          className="rounded-full mx-auto object-cover cursor-pointer"
+          className="h-32 w-32 rounded-full mx-auto object-cover cursor-pointer"
           id="avatar"
           onClick={() => imgRef?.current?.click()}
         />
-        <input type="file" accept="image/*" ref={imgRef} hidden />
+        <input
+          type="file"
+          accept="image/*"
+          ref={imgRef}
+          hidden
+          onChange={(e) => setSelectImg(e.target.files[0])}
+        />
 
         <input
           className="input"

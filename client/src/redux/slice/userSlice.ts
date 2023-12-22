@@ -35,10 +35,14 @@ export const userSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
+    updateImage: (state, action) => {
+      if (state.user?.avatar) state.user.avatar = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setLoading, successUser, setError } = userSlice.actions;
+export const { setLoading, successUser, setError, updateImage } =
+  userSlice.actions;
 
 export default userSlice.reducer;
