@@ -1,15 +1,17 @@
 const express = require("express");
 const userController = require("../controllers/userController");
-const authController = require("../controllers/authController");
+const { protect } = require("../utils/protect");
 
 const router = express.Router();
 
 router.get("/", userController.readUsers);
 router.patch(
   "/updateImg",
-  // authController.protect,
+  // userController.deleteImgFile,
   userController.uploadImage,
   userController.updateImg
 );
+router.patch("/updateUser/:id", protect, userController.updateUser);
+router.delete("/deleteUser/:id", protect, userController.deleteUser);
 
 module.exports = router;

@@ -7,6 +7,10 @@ import { URL_HOST } from "../Costant";
 function Navbar() {
   const { user } = useSelector((state: RootState) => state.user);
 
+  const imagePath = user?.avatar?.startsWith("https://upload")
+    ? user.avatar
+    : `${URL_HOST}/users/${user?.avatar}`;
+
   return (
     <header className="  py-4 px-4 lg:px-0 bg-purple-50 shadow-md">
       <div className="container flex justify-between items-center">
@@ -28,15 +32,15 @@ function Navbar() {
           <FaSearch className="text-stone-800" />
         </form>
         {/* navbar */}
-        {user ? (
+        {user?.avatar ? (
           <Link
             to={"/profile"}
             className="flex items-center gap-3 font-semibold "
           >
             <p>{user.username}</p>
             <img
-              className="h-12 w-12 rounded-full mx-auto object-cover cursor-pointer"
-              src={`${URL_HOST}/users/${user?.avatar}`}
+              className="h-11 w-11 rounded-full mx-auto object-cover cursor-pointer"
+              src={imagePath}
               alt={`${user.avatar} photo`}
             />
           </Link>

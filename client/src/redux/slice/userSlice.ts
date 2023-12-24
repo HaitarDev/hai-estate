@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface User {
+  _id: number;
   username?: string;
   email: string;
   avatar?: string;
@@ -38,11 +39,16 @@ export const userSlice = createSlice({
     updateImage: (state, action) => {
       if (state.user?.avatar) state.user.avatar = action.payload;
     },
+    deleteUser: (state) => {
+      state.error = "";
+      state.loading = false;
+      state.user = null;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setLoading, successUser, setError, updateImage } =
+export const { setLoading, successUser, setError, updateImage, deleteUser } =
   userSlice.actions;
 
 export default userSlice.reducer;
