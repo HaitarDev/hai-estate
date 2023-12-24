@@ -9,6 +9,7 @@ import {
   successUser,
   updateImage,
 } from "../redux/slice/userSlice";
+import { Link } from "react-router-dom";
 
 function Profile() {
   const [formData, setFormData] = useState({});
@@ -180,6 +181,12 @@ function Profile() {
             update
             {/* {false ? "loading..." : "sign up"} */}
           </button>
+          <Link
+            to={"/create-listing"}
+            className="cursor-pointer bg-violet-700 text-white py-4 rounded-lg text-lg font-medium uppercase w-full hover:opacity-95 hover:transition-colors disabled:opacity-80 text-center"
+          >
+            Create listing
+          </Link>
         </div>
 
         {/* sign in button */}

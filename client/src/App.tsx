@@ -6,6 +6,7 @@ import Signup from "./pages/Signup.tsx";
 import Navbar from "./components/Navbar.tsx";
 import Profile from "./pages/Profile.tsx";
 import ProtectProfile from "./components/ProtectProfile.tsx";
+import CreateListing from "./pages/CreateListing.tsx";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route element={<ProtectProfile />}>
           <Route path="/profile" element={<Profile />} />
+          <Route path="/create-listing" element={<CreateListing />} />
         </Route>
       </Routes>
     </BrowserRouter>
