@@ -144,3 +144,15 @@ exports.userListing = async (req, res, next) => {
     next(errorHandler(400, "You do not have permission to access this page."));
   }
 };
+
+exports.readUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) next(errorHandler(400, "User does not exist."));
+    res
+      .status(200)
+      .json({ id: user._id, username: user.username, email: user.email });
+  } catch (error) {
+    next(error);
+  }
+};

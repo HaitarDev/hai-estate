@@ -5,6 +5,7 @@ const { protect } = require("../utils/protect");
 const router = express.Router();
 
 router.get("/", userController.readUsers);
+router.get("/:id", userController.readUser);
 router.patch(
   "/updateImg",
   // userController.deleteImgFile,

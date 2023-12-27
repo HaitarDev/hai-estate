@@ -41,15 +41,16 @@ function Signin() {
           "Content-Type": "application/json",
         },
       });
-      if (!res) dispatch(setLoading(false));
+      if (!res.ok) dispatch(setLoading(false));
 
       const data = await res.json();
+      console.log(data);
       if (data.success === false) {
-        dispatch(setError(data.message));
+        return dispatch(setError(data.message));
       }
 
-      navigate("/");
       dispatch(successUser(data));
+      navigate("/");
       console.log(data);
     } catch (err) {
       console.log(error);
