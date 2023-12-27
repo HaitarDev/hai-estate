@@ -6,7 +6,6 @@ exports.protect = async (req, res, next) => {
   // get token
   try {
     let token;
-    console.log(req.cookies.jwt);
 
     if (
       req.headers.authorization &&

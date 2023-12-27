@@ -13,5 +13,6 @@ router.patch(
 );
 router.patch("/updateUser/:id", protect, userController.updateUser);
 router.delete("/deleteUser/:id", protect, userController.deleteUser);
+router.get("/myListing/:id", protect, userController.userListing);
 
 module.exports = router;

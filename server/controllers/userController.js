@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const { errorHandler } = require("../utils/error");
 const User = require("../models/userModel");
+const Listing = require("../models/ListingModel");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -127,5 +128,19 @@ exports.deleteUser = async (req, res, next) => {
     res.status(200).json("User deleted successfully");
   } catch (error) {
     next(error);
+  }
+};
+
+exports.userListing = async (req, res, next) => {
+  if (req.user.id === req.params.id) {
+    try {
+      const listing = await Listing.find({ userRef: req.user.id });
+
+      res.status(200).json(listing);
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    next(errorHandler(400, "You do not have permission to access this page."));
   }
 };

@@ -4,8 +4,10 @@ const env = require("dotenv");
 const cors = require("cors");
 const path = require("path");
 const cookieParser = require("cookie-parser");
+
 const authRoute = require("./routes/authRoute");
 const userRoute = require("./routes/userRoute");
+const listingRoute = require("./routes/listingRoute");
 
 env.config();
 
@@ -28,6 +30,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // routes ------------------
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
+app.use("/api/listing", listingRoute);
 
 // connect
 mongoose.connect(process.env.MONGO_URL);

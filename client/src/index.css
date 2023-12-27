@@ -11,5 +11,10 @@ body {
 }
 
 .input {
-  @apply p-4 rounded-lg focus:outline focus:outline-violet-400 focus:outline-1 shadow-sm border border-stone-200;
+  @apply p-4 rounded-lg focus:outline focus:outline-violet-400 focus:outline-1 shadow-sm border border-stone-200 disabled:opacity-60;
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  @apply text-violet-700/50 p-8 rounded-lg hover:bg-violet-300/40 transition;
 }

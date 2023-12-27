@@ -7,6 +7,8 @@ import Navbar from "./components/Navbar.tsx";
 import Profile from "./pages/Profile.tsx";
 import ProtectProfile from "./components/ProtectProfile.tsx";
 import CreateListing from "./pages/CreateListing.tsx";
+import UpdateListing from "./pages/UpdateListing.tsx";
+import Listing from "./pages/Listing.tsx";
 
 function App() {
   return (
@@ -17,9 +19,11 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/" element={<Home />} />
+        <Route path="/listing/:id" element={<Listing />} />
         <Route element={<ProtectProfile />}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/create-listing" element={<CreateListing />} />
+          <Route path="/updateListing/:id" element={<UpdateListing />} />
         </Route>
       </Routes>
     </BrowserRouter>

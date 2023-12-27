@@ -10,10 +10,12 @@ import {
   updateImage,
 } from "../redux/slice/userSlice";
 import { Link } from "react-router-dom";
+import UserListing from "../components/profile/UserListing";
 
 function Profile() {
   const [formData, setFormData] = useState({});
   const [selectImg, setSelectImg] = useState(undefined);
+  const [showListing, setSHowListing] = useState(false);
   const imgRef = useRef(null);
   const { user, error, loading } = useSelector(
     (state: RootState) => state.user
@@ -204,9 +206,16 @@ function Profile() {
             Sign out
           </p>
         </div>
-        {/* errors */}
-        {/* <p className="font-medium text-red-500">{error ? error : null}</p> */}
+        <button
+          onClick={() => setSHowListing((prev) => !prev)}
+          className="text-center text-green-600 font-semibold p-2 border rounded-full hover:bg-green-600 hover:text-white transition"
+        >
+          {!showListing ? "show listing" : "hide listing"}
+        </button>
       </form>
+      {showListing ? (
+        <UserListing userId={user?._id} isShow={showListing} />
+      ) : null}
     </div>
   );
 }
