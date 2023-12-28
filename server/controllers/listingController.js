@@ -23,6 +23,7 @@ const upload = multer({ storage: storage, fileFilter: filter });
 
 exports.uploadImages = upload.array("images", 6);
 
+// create
 exports.createListing = async (req, res, next) => {
   if (!req.body) next(errorHandler(404, "There is no data on body"));
   const imagesPath = req.files.map((file) => file.filename);
@@ -75,24 +76,68 @@ exports.createListing = async (req, res, next) => {
       images: imagesPath,
     });
 
-    console.log(listing);
     res.status(200).json(listing);
   } catch (error) {
     next(error);
   }
 };
 
+// read listings
 exports.getListings = async (req, res, next) => {
   try {
-    const listing = await Listing.find();
+    // filter
+    const exludeQuery = [
+      "limit",
+      "sort",
+      "filter",
+      "page",
+      "limit",
+      "skip",
+      "search",
+    ];
+    const newQuery = { ...req.query };
+    exludeQuery.forEach((q) => delete newQuery[q]);
 
+    let query = Listing.find(newQuery);
+
+    // sorting
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",").join(" ");
+
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort("-createdAt");
+    }
+
+    // search by name
+    if (req.query.search) {
+      query = query.find({
+        name: { $regex: req.query.search, $options: "i" },
+      });
+    }
+
+    // paginations
+    const page = +req.query.page || 1;
+    const limit = +req.query.limit || 50;
+    const skip = (page - 1) * limit;
+    query = query.skip(skip).limit(limit);
+    if (req.query.page) {
+      const numListing = await Listing.countDocuments();
+      if (skip >= numListing) next(errorHandler(404, "This page not found"));
+    }
+
+    const listing = await query;
     if (!listing) next(errorHandler(404, "There is no data"));
-    res.status(200).json(listing);
+    res.status(200).json({
+      results: listing.length,
+      listing,
+    });
   } catch (error) {
     next(error);
   }
 };
 
+// delete
 exports.deleteList = async (req, res, next) => {
   if (req.user.id !== req.params.id)
     next(errorHandler(400, "You cant delete other user listing"));
@@ -105,6 +150,7 @@ exports.deleteList = async (req, res, next) => {
   }
 };
 
+// update
 exports.updateList = async (req, res, next) => {
   if (!req.body) next(errorHandler(404, "There is no data on body"));
   const imagesPath = req.files.map((file) => file.filename);
@@ -170,6 +216,7 @@ exports.updateList = async (req, res, next) => {
   }
 };
 
+// get one listing
 exports.getListing = async (req, res, next) => {
   try {
     const listing = await Listing.findById(req.params.id);
