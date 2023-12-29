@@ -9,6 +9,7 @@ import ProtectProfile from "./components/ProtectProfile.tsx";
 import CreateListing from "./pages/CreateListing.tsx";
 import UpdateListing from "./pages/UpdateListing.tsx";
 import Listing from "./pages/Listing.tsx";
+import SearchPage from "./pages/SearchPage.tsx";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
+        <Route path="/search" element={<SearchPage />} />
         <Route path="/" element={<Home />} />
         <Route path="/listing/:id" element={<Listing />} />
         <Route element={<ProtectProfile />}>

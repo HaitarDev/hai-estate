@@ -11,7 +11,8 @@ const { protect } = require("../utils/protect");
 
 const router = express.Router();
 
-router.route("/").post(protect, uploadImages, createListing).get(getListings);
+router.route("/").post(protect, uploadImages, createListing);
+router.route("/get").get(getListings);
 router.route("/:id").get(getListing);
 
 router.route("/deleteList/:id").delete(protect, deleteList);

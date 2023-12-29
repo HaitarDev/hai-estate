@@ -1,8 +1,8 @@
-import { FaSearch } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { RootState } from "../redux/store";
 import { URL_HOST } from "../Costant";
+import Searchbar from "./Searchbar";
 
 function Navbar() {
   const { user } = useSelector((state: RootState) => state.user);
@@ -23,14 +23,7 @@ function Navbar() {
           <span className="text-purple-700">Estate</span>
         </Link>
         {/* input */}
-        <form className="bg-purple-100 sm:p-2 p-2 rounded-lg flex justify-between items-center shadow-inner">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="bg-transparent focus-within:outline-none w-32 sm:w-64"
-          />
-          <FaSearch className="text-stone-800" />
-        </form>
+        <Searchbar />
         {/* navbar */}
         {user?.avatar ? (
           <Link
