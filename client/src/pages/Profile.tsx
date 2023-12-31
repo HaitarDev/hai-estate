@@ -1,5 +1,3 @@
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/store";
 import React, { useEffect, useRef, useState } from "react";
 import { URL_HOST } from "../Costant";
 import {
@@ -11,6 +9,8 @@ import {
 } from "../redux/slice/userSlice";
 import { Link } from "react-router-dom";
 import UserListing from "../components/profile/UserListing";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 function Profile() {
   const [formData, setFormData] = useState({});

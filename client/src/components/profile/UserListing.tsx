@@ -1,28 +1,22 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { URL_HOST } from "../../Costant";
 
 import List from "./List";
-import { useDispatch, useSelector } from "react-redux";
-import { setLoading, setUserList } from "../../redux/slice/userListSlice";
-import { RootState } from "../../redux/store";
-import { setListingError } from "../../redux/slice/listingSlice";
 
 type Props = {
   userId: string | undefined;
   isShow: boolean;
 };
 export default function UserListing({ userId, isShow }: Props) {
-  const dispatch = useDispatch();
-  const {
-    listing: userList,
-    error,
-    isLoading,
-  } = useSelector((state: RootState) => state.userList);
+  const [userList, setUserList] = useState([]);
+  const [error, setError] = useState("");
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isShow) {
       const showListing = async () => {
-        dispatch(setLoading(true));
+        setLoading(true);
+        setError("");
         try {
           const res = await fetch(`${URL_HOST}/api/user/myListing/${userId}`, {
             method: "GET",
@@ -35,14 +29,16 @@ export default function UserListing({ userId, isShow }: Props) {
           if (!res.ok) console.log("response failed", res.ok);
 
           const data = await res.json();
-          dispatch(setUserList(data));
+          setUserList(data);
+          setError("");
+          setLoading(false);
         } catch (err) {
-          dispatch(setListingError(err.message));
+          setError(err.message);
         }
       };
       showListing();
     }
-  }, [isShow, userId, dispatch]);
+  }, [isShow, userId]);
 
   console.log(userList);
   return (

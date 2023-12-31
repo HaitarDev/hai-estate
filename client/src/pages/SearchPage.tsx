@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { setLoading } from "../redux/slice/userSlice";
 import { URL_HOST } from "../Costant";
+import ListingItem from "../components/ListingItem";
 
 export default function SearchPage() {
   const navigate = useNavigate();
   const [listingData, setListingData] = useState([]);
   console.log(listingData);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [sidebardata, setSidebardata] = useState({
     search: "",
     type: "all",
@@ -95,7 +95,7 @@ export default function SearchPage() {
 
     const fetchListing = async () => {
       const searchQuery = URLparams.toString();
-      setLoading(true);
+      setIsLoading(true);
       const res = await fetch(`${URL_HOST}/api/listing/get?${searchQuery}`);
       if (!res.ok) console.log("something wrong : ", res.status);
 
@@ -214,22 +214,22 @@ export default function SearchPage() {
           Listing results:
         </h1>
         <div className="p-7 flex flex-wrap gap-4">
-          {/* {!loading && listings.length === 0 && (
+          {!isLoading && listingData?.results === 0 && (
             <p className="text-xl text-slate-700">No listing found!</p>
           )}
-          {loading && (
+          {isLoading && (
             <p className="text-xl text-slate-700 text-center w-full">
               Loading...
             </p>
           )}
 
-          {!loading &&
-            listings &&
-            listings.map((listing) => (
+          {!isLoading &&
+            listingData &&
+            listingData?.listings?.map((listing) => (
               <ListingItem key={listing._id} listing={listing} />
             ))}
 
-          {showMore && (
+          {/* {showMore && (
             <button
               onClick={onShowMoreClick}
               className="text-green-700 hover:underline p-7 text-center w-full"

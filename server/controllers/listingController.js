@@ -1,6 +1,7 @@
 const multer = require("multer");
 const Listing = require("../models/ListingModel");
 const { errorHandler } = require("../utils/error");
+const User = require("../models/userModel");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -108,17 +109,17 @@ exports.getListings = async (req, res, next) => {
     let type = req.query.type;
 
     if (type === undefined || type === "all") {
-      type = { $in: ["sale", "rent"] };
+      type = { $in: ["sell", "rent"] };
     }
 
-    const searchTerm = req.query.searchTerm || "";
+    const search = req.query.search || "";
 
     const sort = req.query.sort || "createdAt";
 
     const order = req.query.order || "desc";
 
     const listings = await Listing.find({
-      name: { $regex: searchTerm, $options: "i" },
+      name: { $regex: search, $options: "i" },
       offer,
       furnished,
       parking,
@@ -136,12 +137,13 @@ exports.getListings = async (req, res, next) => {
 
 // delete
 exports.deleteList = async (req, res, next) => {
-  if (req.user.id !== req.params.id)
-    next(errorHandler(400, "You cant delete other user listing"));
+  const listing = await Listing.findById(req.params.id);
 
   try {
+    if (req.user.id !== listing?.userRef.toString())
+      next(errorHandler(400, "You cant delete other user listing"));
     await Listing.findByIdAndDelete(req.params.id, { new: true });
-    res.status.json("This user listing was successfully deleted");
+    return res.status.json("This user listing was successfully deleted");
   } catch (error) {
     next(error);
   }
@@ -151,7 +153,7 @@ exports.deleteList = async (req, res, next) => {
 exports.updateList = async (req, res, next) => {
   if (!req.body) next(errorHandler(404, "There is no data on body"));
   const imagesPath = req.files.map((file) => file.filename);
-  console.log("body:", req.body);
+
   try {
     const {
       regularPrice,
@@ -206,7 +208,6 @@ exports.updateList = async (req, res, next) => {
       { new: true }
     );
 
-    console.log("listing:", listing);
     res.status(200).json(listing);
   } catch (error) {
     next(error);
@@ -220,6 +221,26 @@ exports.getListing = async (req, res, next) => {
     if (!listing) {
       next(errorHandler(400, "Listing Not Found"));
     }
+    res.status(200).json(listing);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// listing by type
+exports.getListingBySaleType = async (req, res, next) => {
+  try {
+    const listing = await Listing.find({ type: "sell" });
+
+    res.status(200).json(listing);
+  } catch (error) {
+    next(error);
+  }
+};
+exports.getListingByRentType = async (req, res, next) => {
+  try {
+    const listing = await Listing.find({ type: "rent" });
+
     res.status(200).json(listing);
   } catch (error) {
     next(error);

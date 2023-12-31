@@ -1,8 +1,8 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+
 import { setListingError, setNewListing } from "../redux/slice/listingSlice";
 import { URL_HOST } from "../Costant";
-import { RootState } from "../redux/store";
+
 import { ChangeEvent, useState } from "react";
 
 export type Inputs = {
@@ -21,8 +21,8 @@ export type Inputs = {
 
 function CreateListing() {
   const [imagesName, setImagesName] = useState<string[]>([]);
-  const dispatch = useDispatch();
-  const { error } = useSelector((state: RootState) => state.listing);
+
+  const [error, setError] = useState("");
 
   const {
     register,
@@ -39,9 +39,8 @@ function CreateListing() {
     const arr = Object.values(imagesName);
     if (arr.length > 6) {
       console.log("6 images");
-      dispatch(setListingError("You have the right only for 6 images ."));
+      setError("You have the right only for 6 images .");
     } else {
-      console.log(arr);
       const newImages: string[] = arr.map((img) => img.name);
 
       setImagesName(newImages);
@@ -60,11 +59,7 @@ function CreateListing() {
     formData.append("furnished", data.furnished.toString());
     formData.append("parking", data.parking.toString());
 
-    data.sell
-      ? formData.append("type", "sell")
-      : data.rent
-      ? formData.append("type", "rent")
-      : formData.append("type", "rent");
+    formData.append("type", data.sell ? "sell" : data.rent ? "rent" : "rent");
 
     for (const file of imagesName) {
       formData.append("images", file);
@@ -81,11 +76,10 @@ function CreateListing() {
 
       const listing = await res.json();
 
-      dispatch(setNewListing(listing));
       reset();
     } catch (error) {
       console.log(error);
-      dispatch(setListingError(error.message));
+      setError(error.message);
     }
   };
 

@@ -16,7 +16,7 @@ const listingSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["rent", "sell"],
+      enum: ["sell", "sale"],
       required: [true, "this field is required"],
     },
 

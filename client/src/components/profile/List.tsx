@@ -2,18 +2,13 @@ import { Link } from "react-router-dom";
 import { URL_HOST } from "../../Costant";
 import { Listing } from "../../redux/slice/listingSlice";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import {
-  deleteListUser,
-  setUserListError,
-} from "../../redux/slice/userListSlice";
 
 type Props = {
   list: Listing;
 };
 function List({ list }: Props) {
   const [showDelete, setShowDelete] = useState<boolean>(false);
-  const dispatch = useDispatch();
+  const [error, setError] = useState("");
 
   const handleDeleteList = async () => {
     const res = await fetch(`${URL_HOST}/api/listing/deleteList/${list._id}`, {
@@ -21,11 +16,9 @@ function List({ list }: Props) {
       credentials: "include",
     });
 
-    if (!res.ok) dispatch(setUserListError("Failed to delete user list"));
-
-    await res.json();
-
-    dispatch(deleteListUser(list._id));
+    if (!res.ok) setError("Failed to delete user list");
+    const data = await res.json();
+    console.log(data);
   };
 
   return (

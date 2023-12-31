@@ -1,22 +1,19 @@
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/store";
 import { useNavigate, useParams } from "react-router-dom";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Inputs } from "./CreateListing";
 import { URL_HOST } from "../Costant";
-import { setUserListError } from "../redux/slice/userListSlice";
 
 function UpdateListing() {
   const [imagesName, setImagesName] = useState<string[]>([]);
-  const dispatch = useDispatch();
-  // get curr listing
-  const params = useParams().id;
-  const userList = useSelector((state: RootState) => state.userList.listing);
-  const error = useSelector((state: RootState) => state.userList.error);
-  const navigate = useNavigate();
+  const [currList, setCurrList] = useState(null);
+  console.log(currList);
+  const [error, setError] = useState("");
+  const [isLoading, setLoading] = useState(false);
 
-  const currList = userList?.find((list) => list._id === params);
+  const params = useParams().id;
+
+  const navigate = useNavigate();
 
   const {
     register,
@@ -35,7 +32,7 @@ function UpdateListing() {
 
     if (arr.length > 6) {
       console.log("6 images");
-      dispatch(setUserListError("You have the right only for 6 images ."));
+      setError("You have the right only for 6 images .");
     } else {
       const newImages: string[] = arr.map((img) => img.name);
 
@@ -74,17 +71,41 @@ function UpdateListing() {
 
       if (!res.ok) throw new Error("Your data is invalid");
 
-      const listing = await res.json();
-
-      console.log(listing);
+      await res.json();
 
       reset();
       navigate(`/listing/${currList?._id}`);
     } catch (error) {
       console.log(error);
-      dispatch(setUserListError(error.message));
+      setError(error.message);
     }
   };
+
+  useEffect(() => {
+    const fetchListing = async () => {
+      setError("");
+      setLoading(true);
+      const res = await fetch(`${URL_HOST}/api/listing/${params}`, {
+        credentials: "include",
+      });
+      if (!res.ok) setError("Couldn't download this listing !");
+      const data = await res.json();
+      setCurrList(data);
+      setLoading(false);
+      setError("");
+    };
+    fetchListing();
+  }, [params]);
+
+  if (!currList || isLoading)
+    return <p className=" my-7 text-center text-xl font-medium">Loading ...</p>;
+
+  if (error)
+    return (
+      <p className="my-7 text-center text-xl font-medium text-red-600">
+        {error}
+      </p>
+    );
 
   return (
     <main className="p-4 my-16 max-w-lg sm:max-w-4xl mx-auto">

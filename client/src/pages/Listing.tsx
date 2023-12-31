@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { URL_HOST } from "../Costant";
-import { Listing } from "../redux/slice/listingSlice";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import { IoLocationSharp, IoBedSharp } from "react-icons/io5";
@@ -17,7 +16,7 @@ import { RootState } from "../redux/store";
 import Contact from "../components/listing/Contact";
 
 function Listing() {
-  const [listing, setListing] = useState<Listing | null>(null);
+  const [listing, setListing] = useState(null);
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
